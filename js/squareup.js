@@ -202,10 +202,11 @@ function moveBlank(toX,toY) {
     //convert to pixels
     toX = initX + moveOneUnit*toX;
     toY = initY + moveOneUnit*toY;    
-    //disappear blank
-    $('div#blank')//.animate({opacity:'0'},'fast') //vanish blank
-        .animate({left:toX+'px',top:toY+'px'},'fast')      //move blank to new position
-        .animate({opacity:0},'fast');          //show blank again    
+    //disappears blank
+    return $('div#blank')                                //vanish blank
+        .animate({left:toX+'px',top:toY+'px'},'fast')    //move blank to new position
+        .animate({opacity:0},'fast')                     //show blank again    
+        .promise();                                      //allows methods to check if done
 }
 
 //switch blank with click (if applicable)
@@ -236,12 +237,18 @@ function moveToBlank(blockSelector) {
         board.blocks[blankX+'_'+blankY] = board.blocks['temp'];        
         
         //move blank
-        moveBlank(blockX,blockY);
+        moveBlank(blockX,blockY).done(
+            //checks if the game is won and presents alert after animation finishes 
+            function() { 
+                if (gameWon(myGoalBoard,board))
+                    alert("YOU WIN!!!\nClick \"Restart Game\" to play again");            
+            }
+        );
+        
         //
         board.blocks[blockX+'_'+blockY] = board.blank;                
         
-    }
-    if (gameWon(myGoalBoard,board)) alert("YOU WIN!!!\nClick \"Restart Game\" to play again");                
+    }    
 }
 
 $(document).ready(displayGame);
