@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Attempt to make the game fit onto a phone screen -->
     <meta content='width=device-width, initial-scale=0.6, maximum-scale=0.8, user-scalable=0.8' name='viewport' />
     <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='../squareup.js'></script>
     <style>
+        /*Set the `blank` tile style*/
         #blank {
             opacity:0;
         } 
+        /*Set the gameboard where the movable game square-pieces reside*/
         #gameboard {
             position:relative;
             left:30px;
@@ -17,18 +20,19 @@
         }
     </style>
 </head>
-
 <body>
     <h1>Square Up!</h1>
-
+    <!--Create div to perfectly fit 5-by-5 grid of squares -->
     <div id='main' style='height:650px;width:600px;'>
+        
+        <!--Allows for the game to be restarted at any time with new goal and gameboard arrangement-->
         <button style="float:center;" onClick = "displayGame()">Restart Game</button>
-    <p id='goal'></p>
-    
-    <!-- Intiate gameboard piece -->
-    <div id='gameboard' >
-
-    </div>
+        
+        <!-- Area for the `goal` board (3-by-3 grid) to reside -->
+        <p id='goal'></p>
+        
+        <!-- Intiate gameboard piece -->
+        <div id='gameboard' ></div>
     </div>
 
 </body>
