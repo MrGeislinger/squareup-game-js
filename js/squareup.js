@@ -46,8 +46,8 @@ function gameWon(goalBoard,board) {
     var borderSize = (gameSize-goalSize)/2 //should always be an integer
     //go over each part of the inner board
     //note we are ignoring the border completely
-    for(x=borderSize; x<board.goalSize; x++) {
-        for(y=borderSize; y<board.goalSize; y++) {
+    for(x=borderSize; x<=board.goalSize; x++) {
+        for(y=borderSize; y<=board.goalSize; y++) {
             innerBoard[x+'_'+y] = board.blocks[x+'_'+y];
         }
     }
