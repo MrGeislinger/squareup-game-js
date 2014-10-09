@@ -1,13 +1,14 @@
-    
 /* Define global variables */
 //spacing definitions
 var initX = 0; //px
 var initY = 0; //px
 var moveOneUnit = 100; //px
+//number of blocks thick for border around goal(1 block thick) 
+var minBorderThickness = 1;
 //size of gameboard (gameSize x gameSize)
 var gameSize = 5;
 //size of innerboard (goalSize x goalSize)
-var goalSize = gameSize - 2; //a border of block (1 block thick) 
+var goalSize = gameSize - 2*minBorderThickness; //goal must be within gameboard 
 //maximum number of the same color
 var maxNumOfColors = gameSize-1;
 //gameboard
@@ -18,6 +19,30 @@ var myGoalBoard;
 var colors = ['blue','lime','darkviolet','red','yellow','hotpink']
 //['#0000FF','#FF0000','#00FF00','#FF00FF','#FFFF00','DarkOrchid']
 
+//set the gameboard size
+function setGameSize(n) {
+    //set the new gameSize
+    gameSize = n;
+    //check that the goalSize < gameSize (by at least minimum border thickness)
+    while((gameSize-goalSize) < (2*minBorderThicknes)){
+        //adjust goalSize to fit with newly assigned gameSize
+        goalSize -= 1;
+    }
+}
+
+//set the goal board size
+function setGoalSize(n) {
+    //set the new goalSize
+    goalSize = n;
+    //check that the goalSize < gameSize (by at least minimum border thickness)
+    while((gameSize-goalSize) < (2*minBorderThicknes)){
+        //adjust gameSize to fit with newly assigned goalSize
+        gameSize += 1;
+    }
+}
+
+
+
 //constructor for block
 function block(x,y,c) {
     this.posX = x;  //int
@@ -27,7 +52,7 @@ function block(x,y,c) {
 }
 
 //constructor for gameboard
-function gameboard(n) {
+function gameboard() {
     this.gameSize = gameSize; //game grid size
     this.goalSize = goalSize; //goal grid size
     this.blocks = {};  //positions of blocks (block objects)
@@ -96,7 +121,7 @@ function createGoalBoard(){
 //start game setup, return gameboard
 function initGame(n) {
     //initiate gameboard
-    var myBoard = new gameboard(n);
+    var myBoard = new gameboard();
     //array of colors for blocks
     //['blue','red','green','purple','yellow']
     //color counts
