@@ -1,23 +1,23 @@
     
+/* Define global variables */
 //spacing definitions
 var initX = 0; //px
 var initY = 0; //px
 var moveOneUnit = 100; //px
-/* Define global variables */
-//grid size
-var gridSize = 5;
-//maximum number of the same number
-var maxNumOfColors = gridSize-1;
+//size of gameboard (gameSize x gameSize)
+var gameSize = 5;
+//size of innerboard (goalSize x goalSize)
+var goalSize = gameSize - 2; //a border of block (1 block thick) 
+//maximum number of the same color
+var maxNumOfColors = gameSize-1;
 //gameboard
 var board; 
-//goal board
+//goal board to match to
 var myGoalBoard; 
 //colors for blocks
 var colors = ['blue','lime','darkviolet','red','yellow','hotpink']
 //['#0000FF','#FF0000','#00FF00','#FF00FF','#FFFF00','DarkOrchid']
 
-
-                             
 //constructor for block
 function block(x,y,c) {
     this.posX = x;  //int
@@ -28,25 +28,31 @@ function block(x,y,c) {
 
 //constructor for gameboard
 function gameboard(n) {
-    this.gridSize = n; //n-by-n grid
-    this.blocks = {};  //positions of blocks (array of block objects)
-    this.blank;   //
+    this.gameSize = gameSize; //game grid size
+    this.goalSize = goalSize; //goal grid size
+    this.blocks = {};  //positions of blocks (block objects)
+    this.blank;        //position of the blank block
 }
 
 
-//check if game has been won
+/* Check if game has been won
+ * Input: goalboard object, gameboard object
+ * Output: Boolean
+ */
 function gameWon(goalBoard,board) {
     //get inner part of board
     var innerBoard = {}; var x; var y;
-    for(x=1; x<(board.gridSize-1); x++) {
-        for(y=1; y<(board.gridSize-1); y++) {
+    //get thickness of the border (number of blocks)
+    var borderSize = (gameSize-goalSize)/2 //should always be an integer
+    //go over each part of the inner board
+    //note we are ignoring the border completely
+    for(x=borderSize; x<board.goalSize; x++) {
+        for(y=borderSize; y<board.goalSize; y++) {
             innerBoard[x+'_'+y] = board.blocks[x+'_'+y];
         }
     }
-    //board.blocks; //.slice(1,board.gridSize-1);
-    //check if it fails at some point
+    //check if any inner board and goal board blocks don't match 
     for(b in innerBoard) {//b in innerBoard)                    
-        //alert(b+': '+innerBoard[b].color +'<-act,goal->'+ myGoalBoard[b].color );
         if (innerBoard[b].color !== myGoalBoard[b].color)
             return false;
     }
@@ -54,21 +60,30 @@ function gameWon(goalBoard,board) {
     return true;
 }
 
-//create goal for inner board
-function createInnerBoard(n){        
-    //color counts
+/* Create goal for inner board
+ * Input: none
+ * Output: goalBoard object with the size of goalSize-by-goalSize
+ */
+function createGoalBoard(){        
+    //keep count of how many times a color was used (initialized to 0)
     var colorCounts = Array.apply(null, new Array(colors.length))
                            .map(Number.prototype.valueOf,0);
-    var innerSize = n-2; //take one block from each side
     var x; var y; 
-    var goalBoard = Array(innerSize*innerSize);        
-    for(x=1; x<=innerSize; x++) {
-        for(y=1; y<=innerSize; y++) {
-            //keep count of colors
+    var goalBoard = Array(goalSize*goalSize);        
+    //get thickness of the border (number of blocks)
+    var borderSize = (gameSize-goalSize)/2; //should always be an integer
+    //go over the goal board using the absolute position in the gameboard
+    for(x=borderSize; x<(board.goalSize+borderSize); x++) {
+        for(y=borderSize; y<(board.goalSize+borderSize); y++) {
+            //randomly get a color
             var cn = Math.floor((Math.random() * colors.length));
-            while( colorCounts[cn] >= maxNumOfColors ) {                            
+            //check that the color hasn't been maxed out
+            //not very efficient but should be no problem with small games
+            while( colorCounts[cn] >= maxNumOfColors ) {
+                //since color was maxed out, try randomly picking again                           
                 cn = Math.floor((Math.random() * colors.length));
             }
+            //color is usable so count it and assign it to new block
             colorCounts[cn] += 1;
             var blockColor = colors[cn];
             goalBoard[x+'_'+y] = new block(x,y,blockColor);
@@ -118,9 +133,9 @@ function displayGame() {
     //
     var gameboardDiv = document.getElementById('gameboard');
     //set style for gameboard
-    board = initGame(gridSize);
+    board = initGame(gameSize);
     //create goal board
-    myGoalBoard = createInnerBoard(gridSize);
+    myGoalBoard = createGoalBoard();
     var goalDiv = document.getElementById("goal");
     var str = ''; var x; var y; var count=0;
     for(y=1; y<(4); y++) {
@@ -138,8 +153,8 @@ function displayGame() {
     //square border thickness
     var squareThick = 1;
     //create inner board's  height and width be a square (not including the edge)
-    var innerHeight = moveOneUnit*(gridSize-2);
-    var innerWidth  = moveOneUnit*(gridSize-2);
+    var innerHeight = moveOneUnit*(gameSize-2);
+    var innerWidth  = moveOneUnit*(gameSize-2);
     //inner board thickness
     var innerThick = 8;
     //inner board position (one block in)
