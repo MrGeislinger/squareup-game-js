@@ -24,7 +24,7 @@ function setGameSize(n) {
     //set the new gameSize
     gameSize = n;
     //check that the goalSize < gameSize (by at least minimum border thickness)
-    while((gameSize-goalSize) < (2*minBorderThicknes)){
+    while((gameSize-goalSize) < (2*minBorderThickness)){
         //adjust goalSize to fit with newly assigned gameSize
         goalSize -= 1;
     }
@@ -35,7 +35,7 @@ function setGoalSize(n) {
     //set the new goalSize
     goalSize = n;
     //check that the goalSize < gameSize (by at least minimum border thickness)
-    while((gameSize-goalSize) < (2*minBorderThicknes)){
+    while((gameSize-goalSize) < (2*minBorderThickness)){
         //adjust gameSize to fit with newly assigned goalSize
         gameSize += 1;
     }
